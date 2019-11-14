@@ -1,7 +1,10 @@
 //Dependencies
 var express = require("express");
-var app = express();
 var bodyParser = require('body-parser');
+var http = require('http');
+var https = require('https');
+var fs = require('fs');
+var app = express();
 
 //Static Server Settings
 app.use(express.static('public'));
@@ -12,23 +15,28 @@ app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
 //SSL Cert Setting
-// var https = require('https');
-// var fs = require('fs');
-// var https_options = {
-//   key: fs.readFileSync("/path/to/private.key"),
-//   cert: fs.readFileSync("/path/to/your_domain_name.crt"),
-//   ca: [
-//           fs.readFileSync('path/to/CA_root.crt'),
-//           fs.readFileSync('path/to/ca_bundle_certificate.crt')
-//        ]
-// };
 
+
+//Routing Options
 app.get('/',function(req, res){
   static_serve('index.html',res);
 });
+
+// var server = app.listen(PORT, function(){
+//     console.log(`App listening on port ${PORT}`);
+//     console.log('Press Ctrl+C to quit.');
+// });
 module.exports = app;
 const PORT = process.env.PORT || 8080;
-var server = app.listen(PORT, function(){
-    console.log(`App listening on port ${PORT}`);
-    console.log('Press Ctrl+C to quit.');
-});
+// //Configure normal Connection
+// http_port = 8080;
+http.createServer(app).listen(PORT,
+  () => {console.log("Listening on localhost:" + PORT)});
+//Configure SSL
+// var privateKey = fs.readFileSync( './private/yanvolo.key' );
+// var certificate = fs.readFileSync( './private/yanvolo_com.crt' );
+//
+// https.createServer({
+//     key: privateKey,
+//     cert: certificate
+// }, app).listen(PORT, () => {console.log("Listening on localhost:" + PORT);});
